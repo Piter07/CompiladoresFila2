@@ -22,6 +22,9 @@ class Parser:
         for char in input_string:
             if char.isalpha() or char.isspace():
                 cleaned_input.append(self.__to_lower(char))
+            elif char in ['.', ',']:
+                cleaned_input.append(' ')
+            # puedes añadir más condiciones para otros caracteres especiales aquí si es necesario
         return cleaned_input
 
     def __to_lower(self, char):

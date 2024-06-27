@@ -1,4 +1,8 @@
-Buen día, soy su representante de atención al cliente. ¿En qué puedo ayudarle hoy?
-Para verificar su identidad, ¿podría proporcionarme su documento o cédula, por favor?
-Muchas gracias por su paciencia.
-Hasta luego y que tenga un excelente día.
+Buenos días, le saluda Joanna de atención al cliente, ¿en qué puedo ayudarle?
+Puedo darle esa información.Por favor, ¿me facilita su número de documento?
+Gracias, una pregunta de seguridad, ¿puede darme el año de su fecha de
+nacimiento?
+Gracias. Verifico que su saldo es de doscientos trienta mil guaraníes a la fecha de
+ayer. ¿Algo más que pueda hacer por usted?
+Gracias por llamar al servicio de atención al cliente.Que tenga un buen día.
+
