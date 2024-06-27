@@ -28,6 +28,8 @@ def tokenizar(texto):
 
 def evaluar_atencion(palabras):
     puntuacion = 0
+    malas = []
+    buenas = []
     detalles = {
         "SALUDO": False,
         "DESPEDIDA": False,
@@ -37,6 +39,10 @@ def evaluar_atencion(palabras):
 
     for palabra in palabras:
         palabra = palabra.replace('_', ' ')
+        if palabra in TOKENS["ATC_MALA"]:
+            malas.append(palabra)
+        elif palabra in TOKENS["ATC_BUENA"]:
+            buenas.append(palabra)
         for criterio, lista in TOKENS.items():
             if palabra in lista:
                 if criterio in detalles:
@@ -48,7 +54,7 @@ def evaluar_atencion(palabras):
     puntuacion += sum(1 for key, value in detalles.items() if isinstance(value, bool) and value)
     puntuacion += detalles["CORTESIA"]
 
-    return puntuacion, detalles
+    return puntuacion, malas, buenas, detalles
 
 def evaluar_experiencia(palabras):
     puntuacion = 0
@@ -72,8 +78,8 @@ def actualizarToken(nombre_lista, valor):
     else:
         print(f"Error: La lista '{nombre_lista}' no existe en TOKENS.")
 
-def obtener_palabras_neutras(palabras_cliente, palabras_malas, palabras_buenas):
-    return [palabra.replace('_', ' ') for palabra in set(palabras_cliente) if palabra.replace('_', ' ') not in palabras_malas and palabra.replace('_', ' ') not in palabras_buenas]
+def obtener_palabras_neutras(palabras, palabras_malas, palabras_buenas):
+    return [palabra.replace('_', ' ') for palabra in set(palabras) if palabra.replace('_', ' ') not in palabras_malas and palabra.replace('_', ' ') not in palabras_buenas]
 
 def reevaluar_archivos():
     archivo_funcionario = 'funcionario.txt'
@@ -91,18 +97,26 @@ def reevaluar_archivos():
     palabras_funcionario = tokenizar(texto_funcionario_limpio)
     palabras_cliente = tokenizar(texto_cliente_limpio)
 
-    puntuacion_atencion, detalles_atencion = evaluar_atencion(palabras_funcionario)
-    puntuacion_experiencia, palabras_malas, palabras_buenas = evaluar_experiencia(palabras_cliente)
+    # Evaluación de experiencia de atención
+    puntuacion_atencion, malas_funcionario, buenas_funcionario, detalles_atencion = evaluar_atencion(palabras_funcionario)
 
-    palabras_neutras = obtener_palabras_neutras(palabras_cliente, palabras_malas, palabras_buenas)
+    # Evaluación de experiencia del cliente
+    puntuacion_experiencia, malas_cliente, buenas_cliente = evaluar_experiencia(palabras_cliente)
+
+    # Obtener palabras neutras de funcionario y cliente
+    palabras_neutras_funcionario = obtener_palabras_neutras(palabras_funcionario, malas_funcionario, buenas_funcionario)
+    palabras_neutras_cliente = obtener_palabras_neutras(palabras_cliente, malas_cliente, buenas_cliente)
+    palabras_neutras = list(set(palabras_neutras_funcionario + palabras_neutras_cliente))
 
     # Mostrar resultados en la consola después de la reevaluación
     print("\nResultados después de la actualización:")
     print(f"Puntuación de Atención: {puntuacion_atencion}")
     print(f"Detalles de Atención: {detalles_atencion}")
-    print(f"Puntuación de Experiencia: {puntuacion_experiencia}")
-    print(f"Palabras malas: {', '.join(palabras_malas)}")
-    print(f"Palabras buenas: {', '.join(palabras_buenas)}")
+    print(f"Palabras malas (Funcionario): {', '.join(malas_funcionario)}")
+    print(f"Palabras buenas (Funcionario): {', '.join(buenas_funcionario)}")
+    print(f"Puntuación de Experiencia del Cliente: {puntuacion_experiencia}")
+    print(f"Palabras malas (Cliente): {', '.join(malas_cliente)}")
+    print(f"Palabras buenas (Cliente): {', '.join(buenas_cliente)}")
 
 def main():
     global TOKENS
@@ -115,25 +129,34 @@ def main():
 
     parser_funcionario = Parser(texto_funcionario)
     texto_funcionario_limpio = ' '.join(parser_funcionario.parse())
-
+    print(texto_funcionario_limpio)
     parser_cliente = Parser(texto_cliente)
     texto_cliente_limpio = ' '.join(parser_cliente.parse())
+    print(texto_cliente_limpio)
 
     palabras_funcionario = tokenizar(texto_funcionario_limpio)
     palabras_cliente = tokenizar(texto_cliente_limpio)
 
-    puntuacion_atencion, detalles_atencion = evaluar_atencion(palabras_funcionario)
-    puntuacion_experiencia, palabras_malas, palabras_buenas = evaluar_experiencia(palabras_cliente)
+    # Evaluación inicial de experiencia de atención
+    puntuacion_atencion, malas_funcionario, buenas_funcionario, detalles_atencion = evaluar_atencion(palabras_funcionario)
 
-    palabras_neutras = obtener_palabras_neutras(palabras_cliente, palabras_malas, palabras_buenas)
+    # Evaluación inicial de experiencia del cliente
+    puntuacion_experiencia, malas_cliente, buenas_cliente = evaluar_experiencia(palabras_cliente)
+
+    # Obtener palabras neutras de funcionario y cliente
+    palabras_neutras_funcionario = obtener_palabras_neutras(palabras_funcionario, malas_funcionario, buenas_funcionario)
+    palabras_neutras_cliente = obtener_palabras_neutras(palabras_cliente, malas_cliente, buenas_cliente)
+    palabras_neutras = list(set(palabras_neutras_funcionario + palabras_neutras_cliente))
 
     # Mostrar resultados iniciales en la consola
     print("Resultados Iniciales:")
     print(f"Puntuación de Atención: {puntuacion_atencion}")
     print(f"Detalles de Atención: {detalles_atencion}")
-    print(f"Puntuación de Experiencia: {puntuacion_experiencia}")
-    print(f"Palabras malas: {', '.join(palabras_malas)}")
-    print(f"Palabras buenas: {', '.join(palabras_buenas)}")
+    print(f"Palabras malas (Funcionario): {', '.join(malas_funcionario)}")
+    print(f"Palabras buenas (Funcionario): {', '.join(buenas_funcionario)}")
+    print(f"Puntuación de Experiencia del Cliente: {puntuacion_experiencia}")
+    print(f"Palabras malas (Cliente): {', '.join(malas_cliente)}")
+    print(f"Palabras buenas (Cliente): {', '.join(buenas_cliente)}")
 
     # Crear la interfaz gráfica para actualizar palabras neutras
     gui = WordUpdaterGUI(palabras_neutras, actualizarToken, reevaluar_archivos)

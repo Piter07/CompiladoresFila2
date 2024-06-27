@@ -23,7 +23,7 @@ class WordUpdaterGUI:
         self.option_var = tk.StringVar()
         self.option_var.set("Seleccionar categoría")
         self.option_menu = ttk.OptionMenu(self.word_frame, self.option_var, "Seleccionar categoría", "EXP_BUENA",
-                                          "EXP_MALA", "SALUDO", "DESPEDIDA", "IDENTIFICACION", "CORTESIA")
+                                          "EXP_MALA", "ATC_BUENA", "ATC_MALA", "SALUDO", "DESPEDIDA", "IDENTIFICACION", "CORTESIA")
         self.option_menu.pack(pady=5)
 
         self.update_button = tk.Button(self.word_frame, text="Actualizar", command=self.actualizar_palabra)
