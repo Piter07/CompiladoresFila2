@@ -1,3 +1,4 @@
+#main.py
 import re
 from text_cleaner import Parser
 from interface import WordUpdaterGUI
